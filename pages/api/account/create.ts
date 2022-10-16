@@ -17,7 +17,6 @@ export const createAccountHandler = async (request: NextApiRequest, response: Ne
   }
 
   response.redirect(303, "/account/profile");
-  // response.status(200).json({ message: "Account created" });
 };
 
 export default createAccountHandler;
