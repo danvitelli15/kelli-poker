@@ -1,9 +1,10 @@
+import { JwtPayload, sign, verify } from "jsonwebtoken";
 import { err, ok, Result } from "neverthrow";
 import { v4 as uuid } from "uuid";
 import { loggerFactory } from "../../utils/logger";
 import { redis } from "../database-connection";
 import { Account } from "./account.entity";
-import { isValidPassword, storePassword } from "./password.repository";
+import { isValidPassword, storePassword, verifyPassword } from "./password.repository";
 
 const logger = loggerFactory("account.repository");
 
@@ -16,7 +17,7 @@ const isEmailInUse = async (email: string): Promise<boolean> => {
   return result !== null;
 };
 
-export const createAccount = async (account: Partial<Account>): Promise<Result<Account, Error>> => {
+export const createAccount = async (account: Partial<Account>): Promise<Result<string, Error>> => {
   logger.trace({ ...account });
   if (!account.email) return err(new Error("Email is required"));
   if (await isEmailInUse(account.email)) return err(new Error("Email is already in use"));
@@ -40,5 +41,42 @@ export const createAccount = async (account: Partial<Account>): Promise<Result<A
 
   await redis.set(`${lookupPrefix}${account.email}`, id);
 
-  return ok(account as Account);
+  const token = signToken(account as Account);
+
+  return ok(token);
+};
+
+export const login = async (account: Partial<Account>): Promise<Result<string, Error>> => {
+  logger.trace({ ...account });
+
+  const id = await redis.get(`${lookupPrefix}${account.email}`);
+  if (!id) return err(new Error("Account not found"));
+
+  const accountResult = await redis.get(`${keyPrefix}${id}`);
+  if (!accountResult) return err(new Error("Account not found"));
+
+  const accountData = JSON.parse(accountResult) as Account;
+  const passwordResult = await redis.get(`${keyPrefix}${id}`);
+  if (!passwordResult) return err(new Error("Account not found"));
+
+  const isValid = await verifyPassword(account.password, id);
+  if (isValid.isErr()) return err(isValid.error);
+
+  const token = signToken(accountData);
+
+  return ok(token);
+};
+
+export const signToken = (data: Account) => {
+  return sign({ data }, process.env.TOKEN_SALT || "hello", { expiresIn: "1h" });
+};
+
+export const validateToken = (token: string) => {
+  try {
+    const { data } = verify(token, process.env.TOKEN_SALT || "hello", { maxAge: "1h" }) as JwtPayload;
+    return ok(data);
+  } catch (error) {
+    logger.error(error);
+    return err(error);
+  }
 };

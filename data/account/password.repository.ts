@@ -24,3 +24,15 @@ export const storePassword = async (password: string, userID: string): Promise<R
   if (result === "OK") return ok(hashResult.value);
   else return err(new Error("Unable to store password"));
 };
+
+export const verifyPassword = async (password: string, userID: string): Promise<Result<boolean, Error>> => {
+  const hashResult = await redis.get(`${keyPrefix}${userID}`);
+  if (!hashResult) return err(new Error("Password not found"));
+
+  return new Promise<Result<boolean, Error>>((resolve, reject) => {
+    bcrypt.compare(password, hashResult, (e, result) => {
+      if (e) reject(err(e));
+      else resolve(ok(result));
+    });
+  });
+};

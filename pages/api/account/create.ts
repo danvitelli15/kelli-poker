@@ -1,6 +1,7 @@
 import { ok } from "assert";
 import { NextApiRequest, NextApiResponse } from "next";
 import { createAccount } from "../../../data/account";
+import { setTokenCookie } from "../../../utils/auth";
 import { loggerFactory } from "../../../utils/logger";
 
 const logger = loggerFactory("api/account/create");
@@ -16,7 +17,9 @@ export const createAccountHandler = async (request: NextApiRequest, response: Ne
     return response.status(400).json({ error: createResult.error.message });
   }
 
-  response.redirect(303, "/account/profile");
+  setTokenCookie(response, createResult.value);
+
+  return response.redirect(303, "/account/profile");
 };
 
 export default createAccountHandler;
