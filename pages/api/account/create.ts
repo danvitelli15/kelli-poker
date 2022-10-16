@@ -1,5 +1,6 @@
+import { ok } from "assert";
 import { NextApiRequest, NextApiResponse } from "next";
-import { Account, createAccount } from "../../../data/account";
+import { createAccount } from "../../../data/account";
 import { loggerFactory } from "../../../utils/logger";
 
 const logger = loggerFactory("api/account/create");
@@ -11,10 +12,11 @@ export const createAccountHandler = async (request: NextApiRequest, response: Ne
 
   if (createResult.isErr()) {
     logger.error(createResult.error);
-    response.status(400).json({ error: createResult.error.message });
+    return response.status(400).json({ error: createResult.error.message });
   }
 
-  response.redirect(303, "/account/profile");
+  // response.redirect(303, "/account/profile");
+  response.status(200).json({ message: "Account created" });
 };
 
 export default createAccountHandler;

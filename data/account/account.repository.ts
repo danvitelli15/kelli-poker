@@ -16,6 +16,7 @@ const isEmailInUse = async (email: string): Promise<boolean> => {
 };
 
 export const createAccount = async (account: Partial<Account>): Promise<Result<Account, Error>> => {
+  logger.trace({ account });
   if (!account.email) return err(new Error("Email is required"));
   if (!(await isEmailInUse(account.email))) return err(new Error("Email is already in use"));
   if (!account.displayName) return err(new Error("Display name is required"));
