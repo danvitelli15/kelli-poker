@@ -13,7 +13,9 @@ interface ICreateAccountFormData {
 export const CreateAccountPage = () => {
   const onSubmit = useCallback((form: ICreateAccountFormData, event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(form);
+    fetch("/api/account/create", { body: JSON.stringify(form), method: "POST" }).then((response) =>
+      response.json().then((body) => console.log(body))
+    );
   }, []);
 
   return (
