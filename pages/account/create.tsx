@@ -1,19 +1,35 @@
-export const createAccountPage = () => {
+import { FC, FormEvent, useCallback, useState } from "react";
+import { EmailField, Form, PasswordField, TextField } from "../../components";
+
+interface ICreateAccountFormData {
+  email: string;
+  firstName: string;
+  handle: string;
+  lastName: string;
+  password: string;
+  passwordConfirmation: string;
+}
+
+export const CreateAccountPage = () => {
+  const onSubmit = useCallback((form: ICreateAccountFormData, event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log(form);
+  }, []);
+
   return (
     <main>
       <h1>Create Account</h1>
-      <form>
-        <div>
-          <label htmlFor="email">Email</label>
-          <input type="email" name="email" id="email" />
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input type="password" name="password" id="password" />
-        </div>
-      </form>
+      <Form onSubmit={onSubmit}>
+        <EmailField identifier="email" label="Email" />
+        <TextField identifier="firstName" label="First Name" />
+        <TextField identifier="lastName" label="Last Name" />
+        <TextField identifier="handle" label="Handle" />
+        <br />
+        <PasswordField identifier="password" label="Password" />
+        <PasswordField identifier="confirmPassword" label="Confirm Password" />
+      </Form>
     </main>
   );
 };
 
-export default createAccountPage;
+export default CreateAccountPage;
