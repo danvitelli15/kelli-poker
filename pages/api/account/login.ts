@@ -18,7 +18,7 @@ export const loginHandler = async (request: NextApiRequest, response: NextApiRes
 
   setTokenCookie(response, loginResult.value);
 
-  return response.redirect(303, "/account/profile");
+  return response.status(200).json({ goTo: "/account/profile" });
 };
 
 export default loginHandler;

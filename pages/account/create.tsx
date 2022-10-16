@@ -20,7 +20,7 @@ export const CreateAccountPage = () => {
       return;
     }
     fetch("/api/account/create", { body: JSON.stringify(form), method: "POST" }).then((response) =>
-      response.json().then((body) => console.log(body))
+      response.status === 200 ? response.json().then((body) => window.location.replace(body.goTo)) : null
     );
   }, []);
 

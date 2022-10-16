@@ -10,7 +10,7 @@ export const LoginPage = () => {
   const onSubmit = useCallback((form: ILoginFormData, event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     fetch("/api/account/login", { body: JSON.stringify(form), method: "POST" }).then((response) =>
-      response.json().then((body) => console.log(body))
+      response.status === 200 ? response.json().then((body) => window.location.replace(body.goTo)) : null
     );
   }, []);
 
