@@ -12,13 +12,14 @@ const lookupPrefix = "lookup:account:";
 
 const isEmailInUse = async (email: string): Promise<boolean> => {
   const result = await redis.get(`${lookupPrefix}${email}`);
+  logger.debug({ email, result });
   return result !== null;
 };
 
 export const createAccount = async (account: Partial<Account>): Promise<Result<Account, Error>> => {
-  logger.trace({ account });
+  logger.trace({ ...account });
   if (!account.email) return err(new Error("Email is required"));
-  if (!(await isEmailInUse(account.email))) return err(new Error("Email is already in use"));
+  if (await isEmailInUse(account.email)) return err(new Error("Email is already in use"));
   if (!account.displayName) return err(new Error("Display name is required"));
   if (!account.firstName && !account.lastName) return err(new Error("First name or last name is required"));
   if (!account.password) return err(new Error("Password is required"));

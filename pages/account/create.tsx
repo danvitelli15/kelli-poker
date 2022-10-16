@@ -25,7 +25,7 @@ export const CreateAccountPage = () => {
         <EmailField identifier="email" label="Email" />
         <TextField identifier="firstName" label="First Name" />
         <TextField identifier="lastName" label="Last Name" />
-        <TextField identifier="handle" label="Handle" />
+        <TextField identifier="displayName" label="Display Name" />
         <br />
         <PasswordField identifier="password" label="Password" />
         <PasswordField identifier="confirmPassword" label="Confirm Password" />
