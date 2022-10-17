@@ -1,6 +1,7 @@
+import { useCallback } from "react";
 import { DateField, Form, SubmitButton, TextField } from "../forms";
 
-export const CreateSessionModal = () => {
+export const CreateSessionModal = ({ formSubmit }) => {
   return (
     <>
       <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createSessionModal">
@@ -22,7 +23,7 @@ export const CreateSessionModal = () => {
               </h1>
               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <Form onSubmit={() => null}>
+            <Form onSubmit={formSubmit}>
               <div className="modal-body">
                 <TextField identifier="title" label="Title" />
                 <DateField identifier="date" label="Date" />
