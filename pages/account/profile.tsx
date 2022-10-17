@@ -86,7 +86,13 @@ export const ProfilePage = (props: ProfilePageProps) => {
                 <p className="card-text">
                   Tickets:
                   {session.tickets.map((ticket, index) => (
-                    <span key={`${session.id}_ticket-${index}`}>{ticket.title}</span>
+                    <a
+                      className="badge"
+                      href={ticket.url.startsWith("http") ? ticket.url : `http://${ticket.url}`}
+                      key={`${session.id}_ticket-${index}`}
+                    >
+                      {ticket.title}
+                    </a>
                   ))}
                 </p>
                 <a href={`/session/edit/${session.id}`} className="btn btn-primary">
