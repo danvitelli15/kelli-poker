@@ -7,7 +7,7 @@ interface ICreateAccountFormData {
   handle: string;
   lastName: string;
   password: string;
-  passwordConfirmation: string;
+  confirmPassword: string;
 }
 
 export const CreateAccountPage = () => {
@@ -15,7 +15,8 @@ export const CreateAccountPage = () => {
 
   const onSubmit = useCallback((form: ICreateAccountFormData, event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (form.password !== form.passwordConfirmation) {
+    console.log(form.password, form.passwordConfirmation, form.password === form.confirmPassword);
+    if (form.password !== form.confirmPassword) {
       setIsMatching(false);
       return;
     }

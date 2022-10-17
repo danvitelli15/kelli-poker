@@ -61,6 +61,7 @@ export const getSessionsForUser = async (userID: string): Promise<Result<Session
   const sessionIDsResult = await redis.smembers(`${userLookupPrefix}${userID}`);
   if (!sessionIDsResult) return err(new Error("Unable to get sessions"));
   const sessionsIDs = sessionIDsResult.map((id) => `${keyPrefix}${id}`);
+  if (!sessionsIDs || sessionsIDs.length <= 0) return ok([]);
 
   const sessionsResults = await redis.mget(...sessionsIDs);
   if (!sessionsResults) return err(new Error("Unable to get sessions"));
