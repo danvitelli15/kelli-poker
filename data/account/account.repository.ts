@@ -4,7 +4,9 @@ import { v4 as uuid } from "uuid";
 import { loggerFactory } from "../../utils/logger";
 import { redis } from "../database-connection";
 import { Account } from "./account.entity";
+import { CreateAccoutnRequest } from "./create-account-request.dto";
 import { isValidPassword, storePassword, verifyPassword } from "./password.repository";
+import { TokenBody } from "./token-body.dto";
 
 const logger = loggerFactory("account.repository");
 
@@ -17,7 +19,7 @@ const isEmailInUse = async (email: string): Promise<boolean> => {
   return result !== null;
 };
 
-export const createAccount = async (account: Partial<Account>): Promise<Result<string, Error>> => {
+export const createAccount = async (account: CreateAccoutnRequest): Promise<Result<string, Error>> => {
   logger.trace({ ...account });
   if (!account.email) return err(new Error("Email is required"));
   if (await isEmailInUse(account.email)) return err(new Error("Email is already in use"));
@@ -28,9 +30,9 @@ export const createAccount = async (account: Partial<Account>): Promise<Result<s
   if (!isValidPassword(account.password)) return err(new Error("Password is invalid"));
 
   const id = uuid();
-  account.id = id;
   logger.info({ account }, "Creating account");
-  const saveAccountResult = await redis.set(`${keyPrefix}${id}`, JSON.stringify(account));
+  const accountEntity = Account.fromCreateAccountRequest(account, id);
+  const saveAccountResult = await redis.set(`${keyPrefix}${id}`, JSON.stringify(accountEntity));
   if (saveAccountResult !== "OK") return err(new Error("Unable to save account"));
 
   const savePasswordResult = await storePassword(account.password, id);
@@ -41,12 +43,19 @@ export const createAccount = async (account: Partial<Account>): Promise<Result<s
 
   await redis.set(`${lookupPrefix}${account.email}`, id);
 
-  const token = signToken(account as Account);
+  const token = signToken(TokenBody.fromAccount(accountEntity));
 
   return ok(token);
 };
 
-export const login = async (account: Partial<Account>): Promise<Result<string, Error>> => {
+export const getAccount = async (id: string): Promise<Result<Account, Error>> => {
+  logger.trace({ id });
+  const account = await redis.get(`${keyPrefix}${id}`);
+  if (!account) return err(new Error("Account not found"));
+  return ok(JSON.parse(account) as Account);
+};
+
+export const login = async (account: { email: string; password: string }): Promise<Result<string, Error>> => {
   logger.trace({ ...account });
 
   const id = await redis.get(`${lookupPrefix}${account.email}`);
@@ -62,12 +71,12 @@ export const login = async (account: Partial<Account>): Promise<Result<string, E
   const isValid = await verifyPassword(account.password, id);
   if (isValid.isErr()) return err(isValid.error);
 
-  const token = signToken(accountData);
+  const token = signToken(TokenBody.fromAccount(accountData));
 
   return ok(token);
 };
 
-export const signToken = (data: Account) => {
+export const signToken = (data: TokenBody) => {
   return sign({ data }, process.env.TOKEN_SALT || "hello", { expiresIn: "1h" });
 };
 
