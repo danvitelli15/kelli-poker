@@ -5,9 +5,11 @@ interface ISharedFieldProps extends DetailedHTMLProps<InputHTMLAttributes<HTMLIn
   label: string;
 }
 
+export interface IDateFieldProps extends ISharedFieldProps {}
+
 export interface IEmailFieldProps extends ISharedFieldProps {}
 
-export interface FormFieldProps extends ISharedFieldProps {
+export interface IFormFieldProps extends ISharedFieldProps {
   type: string;
 }
 

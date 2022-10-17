@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Field } from "./field";
-import { IEmailFieldProps, IPasswordFieldProps, ITextFieldProps } from "./props";
+import { IDateFieldProps, IEmailFieldProps, IPasswordFieldProps, ITextFieldProps } from "./props";
+
+export const DateField = (props: IDateFieldProps) => <Field type="date" {...props}></Field>;
 
 export const EmailField = (props: IEmailFieldProps) => <Field type="email" {...props}></Field>;
 
@@ -14,5 +16,11 @@ export const PasswordField = (props: IPasswordFieldProps) => {
     </Field>
   );
 };
+
+export const SubmitButton = ({ children, ...props }) => (
+  <button type="submit" {...props}>
+    {children}
+  </button>
+);
 
 export const TextField = (props: ITextFieldProps) => <Field type="text" {...props}></Field>;

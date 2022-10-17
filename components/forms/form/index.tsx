@@ -5,8 +5,8 @@ import { IFormProps } from "./props";
 export * from "./form";
 export * from "./props";
 
-export const Form = ({ children, onSubmit }: IFormProps) => (
+export const Form = ({ children, ...props }: IFormProps) => (
   <RecoilRoot>
-    <FormCore onSubmit={onSubmit}>{children}</FormCore>
+    <FormCore {...props}>{children}</FormCore>
   </RecoilRoot>
 );

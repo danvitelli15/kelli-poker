@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { formData, formFieldIDs } from "../state";
-import { FormFieldProps } from "./props";
+import { IFormFieldProps } from "./props";
 
-export const Field = (props: FormFieldProps) => {
+export const Field = (props: IFormFieldProps) => {
   const { identifier, label, name, type, ...rest } = props;
 
   const [value, setValue] = useRecoilState(formData(props.identifier));
@@ -16,14 +16,18 @@ export const Field = (props: FormFieldProps) => {
 
   return (
     <div>
-      <label htmlFor={identifier}>{label}</label>
+      <label className="form-label" htmlFor={identifier}>
+        {label}
+      </label>
       <input
+        className="form-control"
         id={identifier}
         name={identifier}
         onChange={(event) => {
           if (props.onChange) props.onChange(event);
           setValue(event.target.value);
         }}
+        placeholder={label}
         type={type}
         value={value}
         {...rest}

@@ -22,10 +22,5 @@ export const FormCore = ({ children, onSubmit }: IFormProps) => {
     [getAllFieldState, onSubmit]
   );
 
-  return (
-    <form onSubmit={formSubmit}>
-      {children}
-      <button type="submit">Submit</button>
-    </form>
-  );
+  return <form onSubmit={formSubmit}>{children}</form>;
 };
