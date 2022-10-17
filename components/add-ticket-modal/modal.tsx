@@ -1,4 +1,5 @@
-import { Form, SubmitButton, TextField } from "../forms";
+import { TicketType } from "../../data/session";
+import { Form, SelectField, SubmitButton, TextField } from "../forms";
 
 export const AddTicketModal = ({ formSubmit }) => (
   <>

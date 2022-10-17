@@ -63,7 +63,7 @@ export const CreatePlanningSessionPage = (props: { id: string; session: Session 
                   <Form key={`ticket-${index}-form`} onSubmit={() => null}>
                     <TextField identifier={`ticket-${index}-title`} label="Title" value={ticket.title} />
                     <TextField identifier={`ticket-${index}-url`} label="URL" value={ticket.url} />
-                    <SubmitButton className="btn btn-primary disabled">Update</SubmitButton>
+                    {/* <SubmitButton className="btn btn-primary disabled">Update</SubmitButton> */}
                   </Form>
                 </div>
               </div>

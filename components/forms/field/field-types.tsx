@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Field } from "./field";
-import { IDateFieldProps, IEmailFieldProps, IPasswordFieldProps, ITextFieldProps } from "./props";
+import { IDateFieldProps, IEmailFieldProps, IPasswordFieldProps, ISelectFieldProps, ITextFieldProps } from "./props";
 
 export const DateField = (props: IDateFieldProps) => <Field type="date" {...props}></Field>;
 

@@ -1,5 +1,12 @@
 import { AddTicketRequest, CreateSessionRequest } from "./create-session-request.dto";
 
+export enum TicketType {
+  Bug = "bug",
+  Spike = "spike",
+  Story = "story",
+  Task = "task",
+}
+
 export class Session {
   id: string;
   title: string;
@@ -20,11 +27,13 @@ export class Session {
 
 export class Ticket {
   title: string;
+  type: TicketType;
   url: string;
 
   static fromAddTicketRequest(ticket: AddTicketRequest): Ticket {
     return {
       title: ticket.title,
+      type: ticket.type,
       url: ticket.url,
     };
   }

@@ -17,4 +17,8 @@ export interface IPasswordFieldProps extends ISharedFieldProps {
   showable?: boolean;
 }
 
+export interface ISelectFieldProps extends ISharedFieldProps {
+  options: string[];
+}
+
 export interface ITextFieldProps extends ISharedFieldProps {}

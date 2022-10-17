@@ -1,3 +1,5 @@
+import { TicketType } from "./session.entity";
+
 export class CreateSessionRequest {
   title: string;
   date: string;
@@ -6,5 +8,6 @@ export class CreateSessionRequest {
 
 export class AddTicketRequest {
   title: string;
+  type: TicketType;
   url: string;
 }
