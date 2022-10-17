@@ -15,7 +15,7 @@ export const Field = (props: IFormFieldProps) => {
   }, [setFields, props.identifier]);
 
   return (
-    <div>
+    <div className="mb-2">
       <label className="form-label" htmlFor={identifier}>
         {label}
       </label>
