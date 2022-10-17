@@ -1,5 +1,5 @@
 import { FormEvent, useCallback } from "react";
-import { EmailField, Form, PasswordField } from "../../components";
+import { EmailField, Form, PasswordField, SubmitButton } from "../../components";
 
 interface ILoginFormData {
   email: string;
@@ -20,6 +20,7 @@ export const LoginPage = () => {
       <Form onSubmit={onSubmit}>
         <EmailField identifier="email" label="Email" />
         <PasswordField identifier="password" label="Password" />
+        <SubmitButton className="btn btn-primary">Login</SubmitButton>
       </Form>
     </main>
   );

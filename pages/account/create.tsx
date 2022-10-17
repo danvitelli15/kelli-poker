@@ -1,5 +1,5 @@
 import { FC, FormEvent, useCallback, useState } from "react";
-import { EmailField, Form, PasswordField, TextField } from "../../components";
+import { EmailField, Form, PasswordField, SubmitButton, TextField } from "../../components";
 
 interface ICreateAccountFormData {
   email: string;
@@ -36,6 +36,7 @@ export const CreateAccountPage = () => {
         {!isMatching && <p>Passwords do not match</p>}
         <PasswordField identifier="password" label="Password" />
         <PasswordField identifier="confirmPassword" label="Confirm Password" />
+        <SubmitButton className="btm btn-primary">Create Account</SubmitButton>
       </Form>
     </main>
   );
