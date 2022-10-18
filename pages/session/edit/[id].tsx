@@ -35,7 +35,7 @@ export const CreatePlanningSessionPage = (props: { id: string; session: Session 
   const onAddTicketSubmit = useCallback(
     async (ticketInput: AddTicketRequest) => {
       fetch(`/api/session/${props.id}/add-ticket`, { body: JSON.stringify(ticketInput), method: "post" }).then((res) =>
-        res.json().then((data) => setTickets((existing) => [...existing, ticketInput]))
+        res.json().then((data) => setTickets((existing) => [...existing, data]))
       );
     },
     [props.id]

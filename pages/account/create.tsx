@@ -15,7 +15,6 @@ export const CreateAccountPage = () => {
 
   const onSubmit = useCallback((form: ICreateAccountFormData, event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(form.password, form.passwordConfirmation, form.password === form.confirmPassword);
     if (form.password !== form.confirmPassword) {
       setIsMatching(false);
       return;

@@ -8,21 +8,30 @@ export enum TicketType {
 }
 
 export class Session {
-  id: string;
-  title: string;
+  activeTicketIndex: number;
   date: string;
-  tickets: Ticket[];
+  id: string;
   owner: string;
+  participants: Participant[];
+  tickets: Ticket[];
+  title: string;
 
   static fromCreateSessionRequest(session: CreateSessionRequest, id: string, owner: string): Session {
     return {
-      id,
-      title: session.title,
+      activeTicketIndex: -1,
       date: session.date,
-      tickets: session.tickets.map((ticket) => Ticket.fromAddTicketRequest(ticket)),
+      id,
       owner,
+      participants: [],
+      tickets: session.tickets.map((ticket) => Ticket.fromAddTicketRequest(ticket)),
+      title: session.title,
     };
   }
+}
+
+export class Participant {
+  name: string;
+  votes: { [key: string]: string };
 }
 
 export class Ticket {

@@ -3,7 +3,7 @@ import { v4 as uuid } from "uuid";
 import { loggerFactory } from "../../utils/logger";
 import { redis } from "../database-connection";
 import { AddTicketRequest, CreateSessionRequest } from "./create-session-request.dto";
-import { Session } from "./session.entity";
+import { Session, Ticket } from "./session.entity";
 
 const logger = loggerFactory("session.repository");
 
@@ -19,7 +19,7 @@ const saveSession = async (session: Session): Promise<Result<"OK", Error>> => {
 export const addTicketToSession = async (sessionID: string, ticket: AddTicketRequest): Promise<Result<"OK", Error>> => {
   const session = await getSession(sessionID);
   if (session.isErr()) return err(session.error);
-  session.value.tickets.push(ticket);
+  session.value.tickets.push(Ticket.fromAddTicketRequest(ticket));
   const saveResult = await saveSession(session.value);
   if (saveResult.isErr()) return err(saveResult.error);
   return ok(saveResult.value);
@@ -77,4 +77,15 @@ export const isOwnedByUser = async (sessionID: string, userID: string): Promise<
 
   const sessionEntity = JSON.parse(session) as Session;
   return ok(sessionEntity.owner === userID);
+};
+
+export const setActiveTicket = async (sessionID: string, ticketIndex: number): Promise<Result<"OK", Error>> => {
+  const session = await getSession(sessionID);
+  if (session.isErr()) return err(session.error);
+
+  session.value.activeTicketIndex = ticketIndex;
+
+  const saveResult = await saveSession(session.value);
+  if (saveResult.isErr()) return err(saveResult.error);
+  return ok(saveResult.value);
 };

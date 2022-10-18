@@ -78,33 +78,46 @@ export const ProfilePage = (props: ProfilePageProps) => {
         ) : sessionsData.length === 0 ? (
           <p>No sessions yet</p>
         ) : (
-          sessionsData.map((session) => (
-            <div className="card mt-1" key={`${session.id}_card`}>
-              <div className="card-body">
-                <h5 className="card-title">{session.title}</h5>
-                <h6 className="card-subtitle text-muted mb-2">{new Date(session.date).toLocaleDateString()}</h6>
-                <p className="card-text">
-                  Tickets:
-                  {session.tickets.map((ticket, index) => (
-                    <a
-                      className="badge"
-                      href={ticket.url.startsWith("http") ? ticket.url : `http://${ticket.url}`}
-                      key={`${session.id}_ticket-${index}`}
-                    >
-                      {ticket.title}
-                    </a>
-                  ))}
-                </p>
-                <a href={`/session/edit/${session.id}`} className="btn btn-primary">
-                  Edit
-                </a>
-              </div>
-            </div>
-          ))
+          <div className="row row-cols-1 row-cols-lg-2">
+            {sessionsData.map((session) => (
+              <SessionCard key={`${session.id}_card_component`} session={session} />
+            ))}
+          </div>
         )}
       </section>
     </main>
   );
 };
+
+const SessionCard = ({ session }: { session: Session }) => (
+  <div className="card mt-1 text-center" key={`${session.id}_card`}>
+    <div className="card-body">
+      <h5 className="card-title">{session.title}</h5>
+      <h6 className="card-subtitle  mb-2">{new Date(session.date).toLocaleDateString()}</h6>
+      <p className="card-text">
+        Tickets:
+        {session.tickets.map((ticket, index) => (
+          <a
+            className="badge"
+            href={ticket.url.startsWith("http") ? ticket.url : `http://${ticket.url}`}
+            key={`${session.id}_ticket-${index}`}
+          >
+            {ticket.title}
+          </a>
+        ))}
+      </p>
+    </div>
+    <div className="card-footer">
+      <a href={`/session/edit/${session.id}`} className="btn btn-primary mx-1">
+        Edit
+      </a>
+      <button className="btn btn-danger disabled">Delete</button>
+      <a href={`/session/${session.id}`} className="btn btn-success mx-1">
+        Visit
+      </a>
+      <button className="btn btn-secondary disabled"> Invite</button>
+    </div>
+  </div>
+);
 
 export default ProfilePage;
