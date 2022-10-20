@@ -79,6 +79,31 @@ export const isOwnedByUser = async (sessionID: string, userID: string): Promise<
   return ok(sessionEntity.owner === userID);
 };
 
+export const registerParticipant = async (sessionID: string, participantName: string): Promise<Result<"OK", Error>> => {
+  logger.trace({ sessionID, participantName });
+  const session = await getSession(sessionID);
+  if (session.isErr()) return err(session.error);
+
+  if (!session.value.participants) session.value.participants = [];
+  session.value.participants.push({ name: participantName });
+
+  const saveResult = await saveSession(session.value);
+  if (saveResult.isErr()) return err(saveResult.error);
+  return ok(saveResult.value);
+};
+
+export const removeParticipant = async (sessionID: string, participantName: string): Promise<Result<"OK", Error>> => {
+  logger.trace({ sessionID, participantName });
+  const session = await getSession(sessionID);
+  if (session.isErr()) return err(session.error);
+
+  session.value.participants = session.value.participants?.filter((p) => p.name !== participantName);
+
+  const saveResult = await saveSession(session.value);
+  if (saveResult.isErr()) return err(saveResult.error);
+  return ok(saveResult.value);
+};
+
 export const setActiveTicket = async (sessionID: string, ticketIndex: number): Promise<Result<"OK", Error>> => {
   const session = await getSession(sessionID);
   if (session.isErr()) return err(session.error);

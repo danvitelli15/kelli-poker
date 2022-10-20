@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import useSWR from "swr";
 import { validateToken } from "../../data/account";
 import { getSession, isOwnedByUser, Session } from "../../data/session";
@@ -26,6 +26,13 @@ export const ActiveSessionPage = (props) => {
   } = useSWR<Session>(`/api/session/${props.paramID}`, (url) => fetch(url).then((res) => res.json()), {
     refreshInterval: 5000,
   });
+
+  useEffect(() => {
+    fetch(`/api/session/${props.paramID}/participant/add`, { method: "post" });
+    return () => {
+      fetch(`/api/session/${props.paramID}/participant/remove`, { method: "post" });
+    };
+  }, [props.paramID]);
 
   const onSetActiveTicket = useCallback(
     (ticketIndex: number) => () => {
@@ -61,6 +68,8 @@ export const ActiveSessionPage = (props) => {
                       <a
                         className=" btn btn-secondary"
                         href={ticket.url.startsWith("http") ? ticket.url : `http://${ticket.url}`}
+                        rel="noreferrer"
+                        target="_blank"
                       >
                         Go to Jira
                       </a>
@@ -81,7 +90,15 @@ export const ActiveSessionPage = (props) => {
             </div>
           ))}
         </div>
-        <div className="col col-xs-12 col-md-6">participants</div>
+        <div className="col col-xs-12 col-md-6">
+          {session.participants?.map((person) => (
+            <div className="card" key={`voter_${person.name}_card`}>
+              <div className="card-body">
+                <h4 className="card-title">{person.name}</h4>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </>
   );

@@ -31,19 +31,20 @@ export class Session {
 
 export class Participant {
   name: string;
-  votes: { [key: string]: string };
 }
 
 export class Ticket {
   title: string;
   type: TicketType;
   url: string;
+  votes: { [key: string]: string } = {};
 
   static fromAddTicketRequest(ticket: AddTicketRequest): Ticket {
     return {
       title: ticket.title,
       type: ticket.type,
       url: ticket.url,
+      votes: {},
     };
   }
 }
