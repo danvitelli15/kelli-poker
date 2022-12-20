@@ -1,5 +1,5 @@
 import { JwtPayload, sign, verify } from "jsonwebtoken";
-import { err, ok, Result } from "neverthrow";
+import { Err, err, ok, Result } from "neverthrow";
 import { v4 as uuid } from "uuid";
 import { loggerFactory } from "../../utils/logger";
 import { redis } from "../database-connection";
@@ -21,19 +21,21 @@ const isEmailInUse = async (email: string): Promise<boolean> => {
 
 export const createAccount = async (account: CreateAccoutnRequest): Promise<Result<string, Error>> => {
   logger.trace({ ...account });
-  if (!account.email) return err(new Error("Email is required"));
-  if (await isEmailInUse(account.email)) return err(new Error("Email is already in use"));
-  if (!account.displayName) return err(new Error("Display name is required"));
-  if (!account.firstName && !account.lastName) return err(new Error("First name or last name is required"));
-  if (!account.password) return err(new Error("Password is required"));
+  const passworIssues: Err<never, Error>[] = [];
+  if (!account.email) passworIssues.push(err(new Error("Email is required")));
+  if (await isEmailInUse(account.email)) passworIssues.push(err(new Error("Email is already in use")));
+  if (!account.displayName) passworIssues.push(err(new Error("Display name is required")));
+  if (!account.firstName && !account.lastName)
+    passworIssues.push(err(new Error("First name or last name is required")));
+  if (!account.password) passworIssues.push(err(new Error("Password is required")));
 
-  if (!isValidPassword(account.password)) return err(new Error("Password is invalid"));
+  if (!isValidPassword(account.password)) passworIssues.push(err(new Error("Password is invalid")));
 
   const id = uuid();
   logger.info({ account }, "Creating account");
   const accountEntity = Account.fromCreateAccountRequest(account, id);
   const saveAccountResult = await redis.set(`${keyPrefix}${id}`, JSON.stringify(accountEntity));
-  if (saveAccountResult !== "OK") return err(new Error("Unable to save account"));
+  if (saveAccountResult !== "OK") return err(new Error("Unable to save account", { cause: saveAccountResult }));
 
   const savePasswordResult = await storePassword(account.password, id);
   if (savePasswordResult.isErr()) {
