@@ -99,7 +99,7 @@ const SessionCard = ({ session }: { session: Session }) => (
         {session.tickets.map((ticket, index) => (
           <a
             className="badge"
-            href={ticket.url.startsWith("http") ? ticket.url : `http://${ticket.url}`}
+            href={ticket.url?.startsWith("http") ? ticket.url : `http://${ticket.url}`}
             key={`${session.id}_ticket-${index}`}
           >
             {ticket.title}

@@ -25,6 +25,16 @@ export const addTicketToSession = async (sessionID: string, ticket: AddTicketReq
   return ok(saveResult.value);
 };
 
+export const removeTicketFromSession = async (sessionID: string, index: number): Promise<Result<"OK", Error>> => {
+  const session = await getSession(sessionID);
+  if (session.isErr()) return err(session.error);
+  console.log('here');
+  session.value.tickets = session.value.tickets.filter((ticket, ticketIndex) => index !== ticketIndex)
+  const saveResult = await saveSession(session.value);
+  if (saveResult.isErr()) return err(saveResult.error);
+  return ok(saveResult.value);
+};
+
 export const createSession = async (
   sessionRequest: CreateSessionRequest,
   userID: string
