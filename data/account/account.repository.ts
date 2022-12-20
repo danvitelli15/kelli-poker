@@ -3,6 +3,7 @@ import { Err, err, ok, Result } from "neverthrow";
 import { v4 as uuid } from "uuid";
 import { loggerFactory } from "../../utils/logger";
 import { redis } from "../database-connection";
+import { AccountFieldError } from "./account-field.error";
 import { Account } from "./account.entity";
 import { CreateAccoutnRequest } from "./create-account-request.dto";
 import { isValidPassword, storePassword, verifyPassword } from "./password.repository";
@@ -22,14 +23,16 @@ const isEmailInUse = async (email: string): Promise<boolean> => {
 export const createAccount = async (account: CreateAccoutnRequest): Promise<Result<string, Error>> => {
   logger.trace({ ...account });
   const passworIssues: Err<never, Error>[] = [];
-  if (!account.email) passworIssues.push(err(new Error("Email is required")));
-  if (await isEmailInUse(account.email)) passworIssues.push(err(new Error("Email is already in use")));
-  if (!account.displayName) passworIssues.push(err(new Error("Display name is required")));
+  if (!account.email) passworIssues.push(err(new AccountFieldError("Email is required", "email")));
+  if (await isEmailInUse(account.email))
+    passworIssues.push(err(new AccountFieldError("Email is already in use", "email")));
+  if (!account.displayName) passworIssues.push(err(new AccountFieldError("Display name is required", "displayName")));
   if (!account.firstName && !account.lastName)
-    passworIssues.push(err(new Error("First name or last name is required")));
-  if (!account.password) passworIssues.push(err(new Error("Password is required")));
+    passworIssues.push(err(new AccountFieldError("First name or last name is required", "firstName")));
+  if (!account.password) passworIssues.push(err(new AccountFieldError("Password is required", "password")));
 
-  if (!isValidPassword(account.password)) passworIssues.push(err(new Error("Password is invalid")));
+  if (!isValidPassword(account.password))
+    passworIssues.push(err(new AccountFieldError("Password is invalid", "password")));
 
   const id = uuid();
   logger.info({ account }, "Creating account");
