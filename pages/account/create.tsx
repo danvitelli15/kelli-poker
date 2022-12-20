@@ -1,5 +1,12 @@
+import { IncomingMessage } from "http";
 import { FC, FormEvent, useCallback, useState } from "react";
-import { EmailField, Form, PasswordField, SubmitButton, TextField } from "../../components";
+import {
+  EmailField,
+  Form,
+  PasswordField,
+  SubmitButton,
+  TextField,
+} from "../../components";
 
 interface ICreateAccountFormData {
   email: string;
@@ -13,16 +20,24 @@ interface ICreateAccountFormData {
 export const CreateAccountPage = () => {
   // const [isMatching, setIsMatching] = useState(true);
 
-  const onSubmit = useCallback((form: ICreateAccountFormData, event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // if (form.password !== form.confirmPassword) {
-    //   setIsMatching(false);
-    //   return;
-    // }
-    fetch("/api/account/create", { body: JSON.stringify(form), method: "POST" }).then((response) =>
-      response.status === 200 ? response.json().then((body) => window.location.replace(body.goTo)) : null
-    );
-  }, []);
+  const onSubmit = useCallback(
+    (form: ICreateAccountFormData, event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      // if (form.password !== form.confirmPassword) {
+      //   setIsMatching(false);
+      //   return;
+      // }
+      fetch("/api/account/create", {
+        body: JSON.stringify(form),
+        method: "POST",
+      }).then((response) =>
+        response.status === 200
+          ? response.json().then((body) => window.location.replace(body.goTo))
+          : null
+      );
+    },
+    []
+  );
 
   return (
     <main>
