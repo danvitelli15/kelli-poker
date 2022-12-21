@@ -19,7 +19,7 @@ export const createAccountHandler = async (request: NextApiRequest, response: Ne
 
   setTokenCookie(response, createResult.value);
 
-  return response.redirect(303, "/account/profile");
+  return response.status(200).json({ goTo: "/account/profile" });
 };
 
 export default createAccountHandler;

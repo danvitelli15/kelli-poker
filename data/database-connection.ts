@@ -3,11 +3,9 @@ import { redisConfig } from "./configuration";
 
 // const config = redisConfig();
 
-export const redis = new Redis({
-  connectTimeout: 10000,
-  host: process.env.REDIS_ENDPOINT,
-  port: parseInt(process.env.REDIS_PORT),
-});
+export const redis = new Redis(
+  `rediss://:${process.env.REDIS_PASSWORD}@${process.env.REDIS_ENDPOINT}:${process.env.REDIS_PORT}`
+);
 
 process.on("SIGINT", () => {
   redis.quit();
